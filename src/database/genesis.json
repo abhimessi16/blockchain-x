@@ -2,7 +2,6 @@
     "genesis_time": "2024-05-13T06:01:00.000000000Z",
     "chain_id": "the-blockchain-for-clusters",
     "balances": {
-        "abhilas": 1000000,
-        "ana": 1000
+        "abhilas": 1000000
     }
 }

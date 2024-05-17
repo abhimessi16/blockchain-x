@@ -20,11 +20,15 @@ const newStateFromDisk = () => {
         dbFile: txDbFilePath
     }
 
-    const txDb = fs.readFileSync(txDbFilePath).toString().split("\n")
+    const txDb = fs.readFileSync(txDbFilePath)
 
-    txDb.forEach(tx => {
+    if(txDb.toString().length === 0){
+        return state
+    }
+    const txs = txDb.toString().split("\n")
+
+    txs.slice(0, txs.length - 1).forEach(tx => {
         const newTx: Tx = JSON.parse(tx)
-        state.txMempool.push(newTx)
     })
 
     return state
@@ -55,11 +59,11 @@ const apply = (state: State, tx: Tx) => {
 }
 
 const persistTxToDb = (state: State) => {
-    const mempool: Tx[] = [{"From": "abhilas", "To": "geetha", "Value": 1000, "Data": ""}]
+    const mempool: Tx[] = state.txMempool
     const txDb = fs.openSync(txDbFilePath, 'a')
 
     mempool.forEach(tx => {
-        fs.appendFileSync(txDb, `\n${JSON.stringify(tx)}`)
+        fs.appendFileSync(txDb, `${JSON.stringify(tx)}\n`)
 
         state.txMempool = state.txMempool.slice(1)
     })
@@ -67,12 +71,17 @@ const persistTxToDb = (state: State) => {
 }
 
 program.version("1.0.0").description("CLI for Simple Blockchain")
+const state: State = newStateFromDisk()
 
 const tx = program.command('tx')
-tx.option('-f, --from <string>', 'Enter From Account')
-.option('-t, --to <string>', "Enter To Account")
+tx.requiredOption('-f, --from <string>', 'Enter From Account')
+.requiredOption('-t, --to <string>', "Enter To Account")
+.requiredOption('-v, --value <number>', "Enter sum to transfer")
+.option('-d, --data <string>', "Enter Data")
 .action((options) => {
-    console.log(options)
+    const newTx: Tx = options
+    AddTx(state, newTx)
+    persistTxToDb(state)
 })
 
 program.parse(process.argv)
