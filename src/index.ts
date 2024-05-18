@@ -29,12 +29,14 @@ const newStateFromDisk = () => {
 
     txs.slice(0, txs.length - 1).forEach(tx => {
         const newTx: Tx = JSON.parse(tx)
+        apply(state, newTx)
     })
 
     return state
 }
 
 const AddTx = (state: State, tx: Tx) => {
+
     if(apply(state, tx) !== null){
         return "error"
     }
@@ -43,18 +45,28 @@ const AddTx = (state: State, tx: Tx) => {
 }
 
 const apply = (state: State, tx: Tx) => {
+
+    if(!(tx.From in state.Balances))
+        state.Balances[tx.From] = 0
+
+    if(!(tx.To in state.Balances))
+        state.Balances[tx.To] = 0
+    
     if(isReward(tx)){
         state.Balances[tx.To] += tx.Value
+        
         return null
     }
-
+    
     if(state.Balances[tx.From] < tx.Value){
+        console.log('coming here');
+        
         return "insufficient balance"
-    }
-
+    }    
+    
     state.Balances[tx.From] -= tx.Value
     state.Balances[tx.To] += tx.Value
-
+    
     return null
 }
 
@@ -70,8 +82,20 @@ const persistTxToDb = (state: State) => {
 
 }
 
+const balancesList = () => {
+    const state: State = newStateFromDisk()
+
+    console.log('Account balances:');
+    console.log('-----------------');
+    
+    Object.keys(state.Balances).forEach(key => {
+        console.log(`${key}: ${state.Balances[key]}`);
+        
+    })
+
+}
+
 program.version("1.0.0").description("CLI for Simple Blockchain")
-const state: State = newStateFromDisk()
 
 const tx = program.command('tx')
 tx.requiredOption('-f, --from <string>', 'Enter From Account')
@@ -79,13 +103,24 @@ tx.requiredOption('-f, --from <string>', 'Enter From Account')
 .requiredOption('-v, --value <number>', "Enter sum to transfer")
 .option('-d, --data <string>', "Enter Data")
 .action((options) => {
-    const newTx: Tx = options
+    const state: State = newStateFromDisk()
+    
+    if(isNaN(options.value)){
+        return
+    }
+
+    const newTx: Tx = {
+        From: options.from,
+        To: options.to,
+        Value: Number(options.value),
+        Data: options.data
+    }
     AddTx(state, newTx)
     persistTxToDb(state)
 })
 
+const balances = program.command('balances')
+balances.command('list')
+.action(balancesList)
+
 program.parse(process.argv)
-
-const options = program.opts()
-
-console.log(program.args);

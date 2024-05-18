@@ -1,0 +1,9 @@
+{"From":"andrej","To":"andrej","Value":3}
+{"From":"andrej","To":"andrej","Value":700,"Data":"reward"}
+{"From":"andrej","To":"babayaga","Value":2000}
+{"From":"andrej","To":"andrej","Value":100,"Data":"reward"}
+{"From":"babayaga","To":"andrej","Value":1}
+{"From":"babayaga","To":"caesar","Value":1000}
+{"From":"babayaga","To":"andrej","Value":50}
+{"From":"andrej","To":"andrej","Value":100,"Data":"reward"}
+{"From":"andrej","To":"andrej","Value":100,"Data":"reward"}
