@@ -1,4 +1,5 @@
 export type Account = string
+export type Hash = string
 
 export type Tx = {
     From: string
@@ -12,13 +13,24 @@ export type Balance = {
 }
 
 export type State = {
-    Balances: Balance
+    balances: Balance
     txMempool: Tx[]
-    snapshot: string
+    latestBlockHash: Hash
 
     dbFile: string
 }
 
-export function isReward(tx: Tx){
-    return tx.Data === "reward"
+export type Block = {
+    header: BlockHeader
+    txs: Tx[]
+}
+
+export type BlockHeader = {
+    parent: Hash
+    time: number
+}
+
+export type BlockFS = {
+    hash: Hash
+    block: Block
 }
