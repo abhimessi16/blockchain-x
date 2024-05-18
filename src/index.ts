@@ -3,7 +3,9 @@
 import * as fs from "fs"
 import * as path from "path"
 import { Account, Balance, State, Tx, isReward } from "./models"
+
 import { program } from "commander"
+import { createHash } from "crypto"
 
 const genFilePath = path.join(__dirname, "../src", "database", "genesis.json")
 const txDbFilePath = path.join(__dirname, "../src", "database", "tx.db")
@@ -17,6 +19,7 @@ const newStateFromDisk = () => {
     const state: State = {
         Balances: balances,
         txMempool: [],
+        snapshot: '',
         dbFile: txDbFilePath
     }
 
@@ -32,6 +35,7 @@ const newStateFromDisk = () => {
         apply(state, newTx)
     })
 
+    doSnapshot(state)
     return state
 }
 
@@ -70,6 +74,11 @@ const apply = (state: State, tx: Tx) => {
     return null
 }
 
+const doSnapshot = (state: State) => {
+    const txDb = fs.readFileSync(txDbFilePath)
+    state.snapshot = createHash('sha256').update(txDb.toString()).digest('hex')
+}
+
 const persistTxToDb = (state: State) => {
     const mempool: Tx[] = state.txMempool
     const txDb = fs.openSync(txDbFilePath, 'a')
@@ -78,8 +87,9 @@ const persistTxToDb = (state: State) => {
         fs.appendFileSync(txDb, `${JSON.stringify(tx)}\n`)
 
         state.txMempool = state.txMempool.slice(1)
+        doSnapshot(state)
     })
-
+    return state.snapshot
 }
 
 const balancesList = () => {
@@ -92,7 +102,7 @@ const balancesList = () => {
         console.log(`${key}: ${state.Balances[key]}`);
         
     })
-
+    console.log(state.snapshot)
 }
 
 program.version("1.0.0").description("CLI for Simple Blockchain")
@@ -116,7 +126,8 @@ tx.requiredOption('-f, --from <string>', 'Enter From Account')
         Data: options.data
     }
     AddTx(state, newTx)
-    persistTxToDb(state)
+    const snapshot = persistTxToDb(state)
+    console.log(snapshot)
 })
 
 const balances = program.command('balances')

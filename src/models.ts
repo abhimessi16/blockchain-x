@@ -14,6 +14,7 @@ export type Balance = {
 export type State = {
     Balances: Balance
     txMempool: Tx[]
+    snapshot: string
 
     dbFile: string
 }
