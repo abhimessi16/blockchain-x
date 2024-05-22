@@ -4,7 +4,7 @@ import { AddTx, newStateFromDisk, persistToDb } from "../services/common"
 import { createCommand } from "commander"
 
 const txAdd = (options: any) => {
-    const state: State = newStateFromDisk(options.dataDir)
+    const state: State = newStateFromDisk(options.datadir)
     
     if(isNaN(options.value)){
         return
@@ -26,6 +26,7 @@ tx.requiredOption('-f, --from <string>', 'Enter From Account')
 .requiredOption('-t, --to <string>', "Enter To Account")
 .requiredOption('-v, --value <number>', "Enter sum to transfer")
 .option('-d, --data <string>', "Enter Data")
+.requiredOption('--datadir <string>', "Enter Absolute path to all the data.")
 .action(txAdd)
 
 export default tx

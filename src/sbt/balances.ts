@@ -4,9 +4,8 @@ import { newStateFromDisk } from "../services/common";
 import { createCommand } from "commander";
 
 const balancesList = (options: any) => {
-    console.log(options.dataDir)
     
-    const state: State = newStateFromDisk(options.dataDir)
+    const state: State = newStateFromDisk(options.datadir)
 
     console.log('Account balances:');
     console.log('-----------------');
@@ -20,6 +19,7 @@ const balancesList = (options: any) => {
 
 const balances = createCommand('balances')
 balances.command('list')
+.requiredOption('--datadir <string>', "Enter Absolute path to all the data.")
 .action(balancesList)
 
 export default balances

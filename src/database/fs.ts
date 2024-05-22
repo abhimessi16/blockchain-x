@@ -15,7 +15,7 @@ export function getBlocksDbFilePath(dataDir: string) {
 }
 
 export function initDataDirIfNotExists(dataDir: string) {
-    if(fs.existsSync(getGenesisJsonFilePath(dataDir))){
+    if(fs.existsSync(getGenesisJsonFilePath(dataDir))){        
         return
     }
 
@@ -33,7 +33,7 @@ export function initDataDirIfNotExists(dataDir: string) {
 }
 
 function createEmptyBlocksDb(blocksDbPath: string) {
-    fs.open(blocksDbPath, "r", (err, _) => {
+    fs.open(blocksDbPath, "w", (err, _) => {
         if(err)
             return err
     })

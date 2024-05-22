@@ -33,8 +33,6 @@ export const newStateFromDisk = (dataDir: string) => {
         const block1: BlockFS = JSON.parse(block)
         AddBlock(state, block1.block)
     })
-
-    persistToDb(state)
     
     return state
 }

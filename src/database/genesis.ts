@@ -1,7 +1,7 @@
 import * as fs from "fs"
 
 var genesisJson = {
-    "genesis_time": "2024-05-13T06:01:00.000000000Z",
+    "genesis_time": Date.now().toString(),
     "chain_id": "the-blockchain-for-clusters",
     "balances": {
         "andrej": 1000000

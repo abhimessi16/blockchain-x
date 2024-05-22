@@ -6,7 +6,7 @@ import { AddBlock, persistToDb } from "../services/common"
 import { createCommand } from "commander"
 
 const migrate = (options: any) => {
-    const state: State = newStateFromDisk(options.dataDir)
+    const state: State = newStateFromDisk(options.datadir)
 
     const block0: Block = {
         header: {
@@ -44,6 +44,7 @@ const migrate = (options: any) => {
 }
 
 const sbt_migrate = createCommand('migrate')
+.requiredOption('--datadir <string>', "Enter Absolute path to all the data.")
 .action(migrate)
 
 export default sbt_migrate
