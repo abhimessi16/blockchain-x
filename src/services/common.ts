@@ -2,7 +2,7 @@ import * as fs from "fs"
 import * as path from "path"
 
 import { isReward, blockHash, getTime } from "../utils"
-import { Balance, State, BlockFS, Block, Tx } from "../models"
+import { Balance, State, BlockFS, Block, Tx, BlockHeader } from "../models"
 import { getBlocksDbFilePath, getGenesisJsonFilePath, initDataDirIfNotExists } from "../database/fs"
 
 export const newStateFromDisk = (dataDir: string) => {
@@ -33,8 +33,22 @@ export const newStateFromDisk = (dataDir: string) => {
         const block1: BlockFS = JSON.parse(block)
         AddBlock(state, block1.block)
     })
+
+    state.txMempool = []
     
     return state
+}
+
+export const createBlock = (state: State, txs: Tx[]) => {
+    const header: BlockHeader = {
+        parent: state.latestBlockHash,
+        time: getTime()
+    }
+    const block: Block = {
+        header: header,
+        txs: txs
+    }
+    return block
 }
 
 export const AddBlock = (state: State, block: Block) => {
