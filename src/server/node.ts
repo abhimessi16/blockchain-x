@@ -81,9 +81,4 @@ const server = http.createServer((req, res) => {
     }
 })
 
-server.listen(8080, () => {
-    console.log('server running at http://localhost:8080');
-    
-})
-
 export default server
