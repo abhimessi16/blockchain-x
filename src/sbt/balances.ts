@@ -3,8 +3,10 @@ import { newStateFromDisk } from "../services/common";
 
 import { createCommand } from "commander";
 
-const balancesList = () => {
-    const state: State = newStateFromDisk()
+const balancesList = (options: any) => {
+    console.log(options.dataDir)
+    
+    const state: State = newStateFromDisk(options.dataDir)
 
     console.log('Account balances:');
     console.log('-----------------');

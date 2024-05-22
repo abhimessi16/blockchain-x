@@ -11,6 +11,8 @@ program.version("1.0.0").description("CLI for Simple Blockchain")
 program.addCommand(tx)
 program.addCommand(balances)
 program.addCommand(sbt_migrate)
+.requiredOption('--datadir <string>', "Enter Absolute path to all the data.")
 
 program.parse(process.argv)
+console.log(program.opts(), ' coming here')
 export default program

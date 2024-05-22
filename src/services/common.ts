@@ -3,12 +3,14 @@ import * as path from "path"
 
 import { isReward, blockHash, getTime } from "../utils"
 import { Balance, State, BlockFS, Block, Tx } from "../models"
+import { getBlocksDbFilePath, getGenesisJsonFilePath, initDataDirIfNotExists } from "../database/fs"
 
-const genFilePath = path.join(__dirname, "../../src", "database", "genesis.json")
-const txDbFilePath = path.join(__dirname, "../../src", "database", "tx.db")
-const blockDbFilePath = path.join(__dirname, "../../src", "database", "block.db")
+export const newStateFromDisk = (dataDir: string) => {
 
-export const newStateFromDisk = () => {
+    initDataDirIfNotExists(dataDir)
+
+    const genFilePath = getGenesisJsonFilePath(dataDir)
+    const blockDbFilePath = getBlocksDbFilePath(dataDir)
 
     const gen = JSON.parse(fs.readFileSync(genFilePath).toString())
     const balances: Balance = gen.balances
@@ -17,7 +19,7 @@ export const newStateFromDisk = () => {
         balances: balances,
         txMempool: [],
         latestBlockHash: '',
-        dbFile: txDbFilePath
+        dbFile: dataDir
     }
 
     const blockDb = fs.readFileSync(blockDbFilePath)
@@ -81,6 +83,7 @@ export const apply = (state: State, tx: Tx) => {
 
 export const persistToDb = (state: State) => {
 
+    const blockDbFilePath = getBlocksDbFilePath(state.dbFile)
     const blockDb = fs.openSync(blockDbFilePath, 'a')
 
     const block: Block = {

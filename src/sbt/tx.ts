@@ -4,7 +4,7 @@ import { AddTx, newStateFromDisk, persistToDb } from "../services/common"
 import { createCommand } from "commander"
 
 const txAdd = (options: any) => {
-    const state: State = newStateFromDisk()
+    const state: State = newStateFromDisk(options.dataDir)
     
     if(isNaN(options.value)){
         return

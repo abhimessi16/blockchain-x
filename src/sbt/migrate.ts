@@ -5,8 +5,8 @@ import { AddBlock, persistToDb } from "../services/common"
 
 import { createCommand } from "commander"
 
-const migrate = () => {
-    const state: State = newStateFromDisk()
+const migrate = (options: any) => {
+    const state: State = newStateFromDisk(options.dataDir)
 
     const block0: Block = {
         header: {
@@ -44,6 +44,6 @@ const migrate = () => {
 }
 
 const sbt_migrate = createCommand('migrate')
-sbt_migrate.action(migrate)
+.action(migrate)
 
 export default sbt_migrate
