@@ -83,8 +83,6 @@ export const apply = (state: State, tx: Tx) => {
     }
     
     if(state.balances[tx.From] < tx.Value){
-        console.log('coming here');
-        
         return "insufficient balance"
     }    
     
@@ -116,8 +114,6 @@ export const persistToDb = (state: State) => {
     }
 
     fs.appendFileSync(blockDb, `${JSON.stringify(blockFS)}\n`)
-    console.log("adding new block");
-    console.log(blockFS);
 
     state.txMempool = []
 

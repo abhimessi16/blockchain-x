@@ -23,7 +23,7 @@ const server = http.createServer((req, res) => {
             if(!checkBodyContainsDataDir){
                 let resPayload: BasicResponse = {}
                 resPayload["error"] = "Please provide location of data."
-                res.write(JSON.stringify(resPayload), (err) => console.log(err));
+                res.write(JSON.stringify(resPayload));
             }else{
                 const dataDir = jsonBody.datadir
                 const state = newStateFromDisk(dataDir)
@@ -31,7 +31,7 @@ const server = http.createServer((req, res) => {
                     hash: state.latestBlockHash,
                     balances: state.balances
                 }
-                res.write(JSON.stringify(resPayload), (err) => console.log(err))
+                res.write(JSON.stringify(resPayload))
             }
             res.end()
         })

@@ -15,5 +15,4 @@ program.addCommand(sbt_migrate)
 program.addCommand(run)
 
 program.parse(process.argv)
-console.log(program.opts(), ' coming here')
 export default program
