@@ -32,6 +32,7 @@ export const newStateFromDisk = (dataDir: string) => {
     blocks.slice(0, blocks.length - 1).forEach(block => {
         const block1: BlockFS = JSON.parse(block)
         AddBlock(state, block1.block)
+        state.latestBlockHash = blockHash(block1.block)
     })
 
     state.txMempool = []

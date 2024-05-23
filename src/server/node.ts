@@ -63,10 +63,11 @@ const server = http.createServer((req, res) => {
                 const state = newStateFromDisk(dataDir)
                 const block = createBlock(state, [tx])
                 AddBlock(state, block)
-                persistToDb(state)
+                const hash = persistToDb(state)
 
                 resPayload["status"] = "Pass"
                 resPayload["message"] = "Tx added to disk!"
+                resPayload["block_hash"] = hash
 
                 res.write(JSON.stringify(resPayload))
             }else{
