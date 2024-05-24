@@ -18,7 +18,7 @@ export type State = {
     latestBlock: Block
     latestBlockHash: Hash
 
-    dbFile: string
+    dataDir: string
 }
 
 export type Block = {
@@ -35,4 +35,19 @@ export type BlockHeader = {
 export type BlockFS = {
     hash: Hash
     block: Block
+}
+
+export type XNode = {
+    dataDir: string
+    port: number
+
+    state: State
+    knownPeers: XPeerNode[]
+}
+
+export type XPeerNode = {
+    ip: string
+    port: number
+    isBootstrap: boolean
+    isActive: boolean
 }

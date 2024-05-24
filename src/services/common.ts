@@ -27,7 +27,7 @@ export const newStateFromDisk = (dataDir: string) => {
             txs: []
         },
         latestBlockHash: "",
-        dbFile: dataDir
+        dataDir: dataDir
     }
 
     const blockDb = fs.readFileSync(blockDbFilePath)
@@ -105,7 +105,7 @@ export const apply = (state: State, tx: Tx) => {
 
 export const persistToDb = (state: State) => {
 
-    const blockDbFilePath = getBlocksDbFilePath(state.dbFile)
+    const blockDbFilePath = getBlocksDbFilePath(state.dataDir)
     const blockDb = fs.openSync(blockDbFilePath, 'a')
 
     const block: Block = {
