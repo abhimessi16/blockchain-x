@@ -16,6 +16,7 @@ export type State = {
     balances: Balance
     txMempool: Tx[]
     latestBlock: Block
+    latestBlockHash: Hash
 
     dbFile: string
 }

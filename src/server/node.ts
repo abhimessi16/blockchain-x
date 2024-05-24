@@ -1,5 +1,5 @@
 import * as http from "http"
-import { BalanceResponse, BasicResponse } from "./Responses"
+import { BalanceResponse, BasicResponse, StateResponse } from "./Responses"
 import { AddBlock, createBlock, newStateFromDisk, persistToDb } from "../services/common"
 import { Tx } from "../models"
 import { checkBodyContainsDataDir, checkBodyContainsTx } from "./utils"
@@ -78,6 +78,33 @@ const server = http.createServer((req, res) => {
             }
             res.end()
 
+        })
+    }else if(req.url === `${API_URL}/node/status` && req.method === 'POST'){
+        req.once("readable", () => {
+
+            let resBuffer = ""
+            let buf;
+
+            while((buf = req.read()) !== null){
+                resBuffer += buf
+            }
+
+            const jsonBody = JSON.parse(resBuffer)            
+
+            if(!checkBodyContainsDataDir){
+                let resPayload: BasicResponse = {}
+                resPayload["error"] = "Please provide location of data."
+                res.write(JSON.stringify(resPayload));
+            }else{
+                const state = newStateFromDisk(jsonBody.datadir)
+                
+                const resPayload: StateResponse = {
+                    block_hash: blockHash(state.latestBlock),
+                    block_height: state.latestBlock.header.height
+                }
+                res.write(JSON.stringify(resPayload))
+            }
+            res.end()
         })
     }
 })

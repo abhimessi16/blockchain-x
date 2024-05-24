@@ -26,6 +26,7 @@ export const newStateFromDisk = (dataDir: string) => {
             },
             txs: []
         },
+        latestBlockHash: "",
         dbFile: dataDir
     }
 
@@ -34,11 +35,14 @@ export const newStateFromDisk = (dataDir: string) => {
     if(blockDb.toString().length === 0){
         return state
     }
+    
     const blocks = blockDb.toString().split("\n")
 
     blocks.slice(0, blocks.length - 1).forEach(block => {
         const block1: BlockFS = JSON.parse(block)
         AddBlock(state, block1.block)
+        state.latestBlock = block1.block
+        state.latestBlockHash = block1.hash
     })
 
     state.txMempool = []
@@ -106,15 +110,17 @@ export const persistToDb = (state: State) => {
 
     const block: Block = {
         header: {
-            parent: blockHash(state.latestBlock),
+            parent: state.latestBlockHash,
             height: state.latestBlock.header.height + 1,
             time: getTime()
         },
         txs: state.txMempool
     }
 
+    const hash = blockHash(block)
+
     const blockFS: BlockFS = {
-        hash: blockHash(block),
+        hash: hash,
         block: block
     }
 
@@ -122,6 +128,7 @@ export const persistToDb = (state: State) => {
 
     state.txMempool = []
     state.latestBlock = block
+    state.latestBlockHash = hash
 
-    return blockFS.hash
+    return hash
 }
