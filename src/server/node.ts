@@ -1,9 +1,9 @@
 import * as http from "http"
 import { BalanceResponse, BasicResponse } from "./Responses"
 import { AddBlock, createBlock, newStateFromDisk, persistToDb } from "../services/common"
-import balances from "../sbt/balances"
 import { Tx } from "../models"
 import { checkBodyContainsDataDir, checkBodyContainsTx } from "./utils"
+import { blockHash } from "../utils"
 
 const API_URL = '/api/v1'
 
@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
                 const dataDir = jsonBody.datadir
                 const state = newStateFromDisk(dataDir)
                 let resPayload: BalanceResponse = {
-                    hash: state.latestBlockHash,
+                    hash: blockHash(state.latestBlock),
                     balances: state.balances
                 }
                 res.write(JSON.stringify(resPayload))

@@ -15,7 +15,7 @@ export type Balance = {
 export type State = {
     balances: Balance
     txMempool: Tx[]
-    latestBlockHash: Hash
+    latestBlock: Block
 
     dbFile: string
 }
@@ -27,6 +27,7 @@ export type Block = {
 
 export type BlockHeader = {
     parent: Hash
+    height: number
     time: number
 }
 
