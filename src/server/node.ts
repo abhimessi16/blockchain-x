@@ -6,10 +6,11 @@ import { Tx } from "../models"
 import { checkBodyContainsDataDir, checkBodyContainsTx, getIpAddress } from "./utils"
 import { blockHash } from "../utils"
 import { xNode, state } from "../sbt/run"
+import { fetchNewBlocksAndPeers } from "../services/peers"
 
 const API_URL = '/api/v1'
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
 
     if(!checkBodyContainsDataDir(xNode)){
 
@@ -90,7 +91,8 @@ const server = http.createServer((req, res) => {
 
                 const resPayload: StateResponse = {
                     block_hash: blockHash(state.latestBlock),
-                    block_height: state.latestBlock.header.height
+                    block_height: state.latestBlock.header.height,
+                    peers_known: xNode.knownPeers
                 }
                 res.write(JSON.stringify(resPayload))
                 res.end()
@@ -98,6 +100,7 @@ const server = http.createServer((req, res) => {
             })
         }else if(req.url === `${API_URL}/test` && req.method === 'GET'){
             res.write(JSON.stringify(xNode))
+            await fetchNewBlocksAndPeers()
             res.end()
         }else{
             const resPayload: BasicResponse = {

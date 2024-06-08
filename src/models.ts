@@ -42,7 +42,9 @@ export type XNode = {
     port: number
 
     state: State
-    knownPeers: XPeerNode[]
+    knownPeers: {
+        [key: string]: XPeerNode
+    }
 }
 
 export type XPeerNode = {

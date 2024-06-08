@@ -1,4 +1,4 @@
-import { Balance } from "../models"
+import { Balance, XPeerNode } from "../models"
 
 export type BasicResponse = {
     [key: string]: string
@@ -12,4 +12,7 @@ export type BalanceResponse = {
 export type StateResponse = {
     block_hash: string
     block_height: number
+    peers_known: {
+        [key: string]: XPeerNode
+    }
 }

@@ -2,7 +2,7 @@ import { createCommand } from "commander";
 
 import server from "../server/node";
 import { State, XNode, XPeerNode } from "../models";
-import { getIpAddress } from "../server/utils";
+import { getIpAddress, getTCPAddress } from "../server/utils";
 import { newStateFromDisk } from "../services/common";
 
 const DefaultHttpPort = 8080
@@ -15,18 +15,22 @@ const bootstrap: XPeerNode = {
 }
 
 export const xNode: XNode = <XNode>{}
-export let state: State = <State>{}
+export const state: State = <State>{}
 
-const runServer = (options: any) => {
+const runServer = async (options: any) => {
 
     const dataDir: string = options.datadir
     const port: number = options.port
 
     xNode.dataDir = dataDir
     xNode.port = port
-    xNode.knownPeers = [bootstrap]
+    xNode.knownPeers = {
+        [getTCPAddress(bootstrap)]: bootstrap
+    }
 
-    state = newStateFromDisk(xNode.dataDir)
+    Object.assign(state, newStateFromDisk(xNode.dataDir))
+
+    
     
     server.listen(DefaultHttpPort)
 }

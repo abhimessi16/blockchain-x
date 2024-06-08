@@ -1,4 +1,5 @@
 import * as os from "os"
+import { XPeerNode } from "../models"
 
 export function checkBodyContainsTx(jsonBody: any){
     const keys = Object.keys(jsonBody)
@@ -31,4 +32,8 @@ export function getIpAddress() {
         }
     }
     return '0.0.0.0'
+}
+
+export function getTCPAddress(peer: XPeerNode) {
+    return `${peer.ip}:${peer.port}`
 }
